@@ -15,8 +15,8 @@ function App() {
             <Button to={`/info`}>COOL</Button>
           </div>
         </div>
-        <div className="h-full bg-slate-500">
-          <div className="bg-slate-100 h-4/5 m-4 p-4 rounded shadow">
+        <div className="h-full bg-slate-500 flex justify-center content-center">
+          <div className="bg-slate-100 h-4/5 m-4 p-4 rounded shadow flex">
             <Outlet/>
           </div>
         </div>
