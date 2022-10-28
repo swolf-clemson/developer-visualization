@@ -71,9 +71,9 @@ function Visualization() {
   });
 
   return (
-    <div>
+    <div className="h-full w-full flex flex-col mx-auto">
       <p>A cool lil graph</p>
-      <svg ref={svgElem} className="flex justify-center content-center" id="hierarchy"></svg>
+      <svg ref={svgElem} className="flex align-middle justify-center content-center mx-auto" id="hierarchy"></svg>
     </div>
   );
 }

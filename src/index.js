@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element:  <div className="w-96 h-96">HOME</div>,
+        element:  <div className="flex mx-auto m-4">HOME</div>,
       },
       {
         path: "vis",
