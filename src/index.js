@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import App from "./App";
 import Visualization from "./components/vis";
 import "./index.css";
+import StaticDemo from "./components/info";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
       },
       {
         path: "info",
-        element: <div className="w-96 h-96">INFO</div>,
+        element: <StaticDemo/>,
       },
     ],
   },
