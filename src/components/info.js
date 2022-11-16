@@ -24,14 +24,8 @@ function StaticDemo() {
         />
       </div>
 
-      <Button onClick1={() => setActiveVisualization("age_vs_median_comp.png")}>
-        AvMC
-      </Button>
-      <Button onClick1={() => setActiveVisualization("ethnicity_vs_comp.png")}>
-        EvC
-      </Button>
-
       <div>
+        <div>Y-Axis</div>
         <Button
           onClick1={() => selectNewY("ethnicity")}
           onClick2={() => clearSelectionY()}
@@ -66,6 +60,7 @@ function StaticDemo() {
         </Button>
       </div>
       <div>
+        <div>X-Axis</div>
         <Button
           onClick1={() => selectNewX("age")}
           onClick2={() => clearSelectionX()}

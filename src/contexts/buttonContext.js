@@ -13,15 +13,16 @@ export const useUIState = () => useContext(UIContext);
 // Here's the actual context object (shared across all views)
 function useRemoteContext() {
   const imgList = {
-    age_vs_median_comp: "age_vs_median_comp.png",
-    ethnicity_vs_comp: "ethnicity_vs_comp.png",
-    ethnicity_vs_median_comp: "ethnicity_vs_median_comp.png",
-    exp_vs_comp: "exp_vs_comp.png",
-    gender_vs_comp_items: "gender_vs_comp_items.png",
-    gender_vs_comp: "gender_vs_comp.png",
-    gender_vs_icpm: "gender_vs_icpm.png",
-    icpm_vs_comp: "icpm_vs_comp.png",
-    remote_vs_comp: "remote_vs_comp.png",
+    default: "mrrock.gif",
+    age_median: "age_vs_median_comp.png",
+    compensation_ethnicity: "ethnicity_vs_comp.png",
+    median_ethnicity: "ethnicity_vs_median_comp.png",
+    experience_median: "exp_vs_comp.png",
+    gender_compensation: "gender_vs_comp_items.png",
+    gender_median: "gender_vs_comp.png",
+    gender_icpm: "gender_vs_icpm.png",
+    icpm_median: "icpm_vs_comp.png",
+    remote_median: "remote_vs_comp.png",
   };
 
   const validY2XCombos = {
@@ -103,7 +104,7 @@ function useRemoteContext() {
   });
 
   const [activeVisualization, setActiveVisualization] = useState(
-    imgList.age_vs_median_comp
+    imgList.default
   );
 
   function clearSelectionX() {
@@ -117,6 +118,7 @@ function useRemoteContext() {
       tempState[yKey].enabled = true;
     });
     setYButtonState(tempState);
+    setActiveVisualization(imgList.default);
   }
 
   function selectNewX(newX) {
@@ -129,18 +131,15 @@ function useRemoteContext() {
 
     setXButtonState(tempState);
 
-    // if there is an Y already set to selected == true, show the image
-    Object.keys(yButtonState).forEach((yKey) => {
-      if (yButtonState[yKey].selected) {
-      }
-    });
-
     var tempState = JSON.parse(JSON.stringify(yButtonState)); // This is a hack to quickly copy an item lol
     Object.keys(tempState).forEach((yKey) => {
       if (validX2YCombos[newX].includes(yKey)) {
         tempState[yKey].enabled = true;
       } else {
         tempState[yKey].enabled = false;
+      }
+      if (tempState[yKey].selected) {
+        setActiveVisualization(imgList[newX + "_" + yKey]);
       }
     });
 
@@ -158,6 +157,7 @@ function useRemoteContext() {
       tempState[xKey].enabled = true;
     });
     setXButtonState(tempState);
+    setActiveVisualization(imgList.default);
   }
 
   function selectNewY(newY) {
@@ -179,6 +179,9 @@ function useRemoteContext() {
         tempState[xKey].enabled = true;
       } else {
         tempState[xKey].enabled = false;
+      }
+      if (tempState[xKey].selected) {
+        setActiveVisualization(imgList[xKey + "_" + newY]);
       }
     });
 
