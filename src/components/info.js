@@ -7,6 +7,10 @@ function StaticDemo() {
     activeVisualization,
     xButtonState,
     selectNewX,
+    yButtonState,
+    selectNewY,
+    clearSelectionY,
+    clearSelectionX,
     setActiveVisualization,
   } = useUIState();
 
@@ -20,46 +24,104 @@ function StaticDemo() {
         />
       </div>
 
-      <Button onClick={() => setActiveVisualization("age_vs_median_comp.png")}>
+      <Button onClick1={() => setActiveVisualization("age_vs_median_comp.png")}>
         AvMC
       </Button>
-      <Button onClick={() => setActiveVisualization("ethnicity_vs_comp.png")}>
+      <Button onClick1={() => setActiveVisualization("ethnicity_vs_comp.png")}>
         EvC
       </Button>
 
       <div>
         <Button
-          onClick={() => selectNewX("ethnicity")}
-          active={xButtonState.ethnicity.selected}
+          onClick1={() => selectNewY("ethnicity")}
+          onClick2={() => clearSelectionY()}
+          active={yButtonState.ethnicity.selected}
+          enabled={yButtonState.ethnicity.enabled}
         >
           Ethnicity
         </Button>
         <Button
-          onClick={() => selectNewX("compensation")}
-          active={xButtonState.compensation.selected}
+          onClick1={() => selectNewY("compensation")}
+          onClick2={() => clearSelectionY()}
+          active={yButtonState.compensation.selected}
+          enabled={yButtonState.compensation.enabled}
         >
           Compensation
         </Button>
         <Button
-          onClick={() => selectNewX("median")}
-          active={xButtonState.median.selected}
+          onClick1={() => selectNewY("median")}
+          onClick2={() => clearSelectionY()}
+          active={yButtonState.median.selected}
+          enabled={yButtonState.median.enabled}
         >
-          Median
+          Median Compensation
         </Button>
         <Button
-          onClick={() => selectNewX("icpm")}
-          active={xButtonState.icpm.selected}
+          onClick1={() => selectNewY("icpm")}
+          onClick2={() => clearSelectionY()}
+          active={yButtonState.icpm.selected}
+          enabled={yButtonState.icpm.enabled}
         >
           IC/PM
         </Button>
       </div>
       <div>
-        <Button>Age</Button>
-        <Button>Ethnicity</Button>
-        <Button>Experience</Button>
-        <Button>Gender</Button>
-        <Button>IC/PM</Button>
-        <Button>Remote Work</Button>
+        <Button
+          onClick1={() => selectNewX("age")}
+          onClick2={() => clearSelectionX()}
+          active={xButtonState.age.selected}
+          enabled={xButtonState.age.enabled}
+        >
+          Age
+        </Button>
+        <Button
+          onClick1={() => selectNewX("compensation")}
+          onClick2={() => clearSelectionX()}
+          active={xButtonState.compensation.selected}
+          enabled={xButtonState.compensation.enabled}
+        >
+          Compensation
+        </Button>
+        <Button
+          onClick1={() => selectNewX("experience")}
+          onClick2={() => clearSelectionX()}
+          active={xButtonState.experience.selected}
+          enabled={xButtonState.experience.enabled}
+        >
+          Experience
+        </Button>
+        <Button
+          onClick1={() => selectNewX("gender")}
+          onClick2={() => clearSelectionX()}
+          active={xButtonState.gender.selected}
+          enabled={xButtonState.gender.enabled}
+        >
+          Gender
+        </Button>
+        <Button
+          onClick1={() => selectNewX("icpm")}
+          onClick2={() => clearSelectionX()}
+          active={xButtonState.icpm.selected}
+          enabled={xButtonState.icpm.enabled}
+        >
+          IC/PM
+        </Button>
+        <Button
+          onClick1={() => selectNewX("median")}
+          onClick2={() => clearSelectionX()}
+          active={xButtonState.median.selected}
+          enabled={xButtonState.median.enabled}
+        >
+          Median Compensation
+        </Button>
+        <Button
+          onClick1={() => selectNewX("remote")}
+          onClick2={() => clearSelectionX()}
+          active={xButtonState.remote.selected}
+          enabled={xButtonState.remote.enabled}
+        >
+          Remote Work
+        </Button>
       </div>
     </div>
   );
