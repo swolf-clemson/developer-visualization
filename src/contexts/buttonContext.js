@@ -136,9 +136,8 @@ function useRemoteContext() {
     });
 
     var tempState = JSON.parse(JSON.stringify(yButtonState)); // This is a hack to quickly copy an item lol
-    var validStates = JSON.parse(JSON.stringify(validX2YCombos)); // doing this so i can index
     Object.keys(tempState).forEach((yKey) => {
-      if (validStates[newX].includes(yKey)) {
+      if (validX2YCombos[newX].includes(yKey)) {
         tempState[yKey].enabled = true;
       } else {
         tempState[yKey].enabled = false;
@@ -174,10 +173,9 @@ function useRemoteContext() {
     // if there is an X already set to selected == true, show the image
 
     var tempState = JSON.parse(JSON.stringify(xButtonState)); // This is a hack to quickly copy an item lol
-    var validStates = JSON.parse(JSON.stringify(validY2XCombos)); // doing this so i can index
 
     Object.keys(tempState).forEach((xKey) => {
-      if (validStates[newY].includes(xKey)) {
+      if (validY2XCombos[newY].includes(xKey)) {
         tempState[xKey].enabled = true;
       } else {
         tempState[xKey].enabled = false;
