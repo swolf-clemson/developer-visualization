@@ -53,7 +53,13 @@ function StaticDemo() {
       </div>
 
       <div className="flex grow flex-col h-full w-full">
-        <img src={activeVisualization} className="object-contain max-h-fit max-w-fit shrink" alt="no" />
+        <div className="flex h-full">
+          <img
+            src={activeVisualization}
+            className="object-contain max-h-fit max-w-fit shrink"
+            alt="no"
+          />
+        </div>
 
         <div className="w-full h-50">
           <p>X-Axis</p>

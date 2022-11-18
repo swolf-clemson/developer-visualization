@@ -6,7 +6,7 @@ function App() {
   return (
     <ProvideUIContext>
       <div className="App">
-        <div className="w-screen h-screen flex flex-col">
+        <div className="w-screen h-screen flex grow-0 flex-col">
           <div className="h-16 bg-slate-400 justify-center content-center flex flex-row">
             <div className="w-full h-full flex items-center justify-start">
               <p className="text-center bg-slate-100 rounded shadow p-2 m-2">
