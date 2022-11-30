@@ -16,7 +16,7 @@ function App() {
             <div className="w-full h-full flex items-center justify-end p-2">
               <Button to={`/`}>Home</Button>
               <Button to={`/vis`}>D3 Visualization</Button>
-              <Button to={`/info`}>About</Button>
+              <Button to={`/info`}>Interactivity Demo</Button>
             </div>
           </div>
           <div className="h-full w-full bg-slate-500 flex justify-center content-center">
