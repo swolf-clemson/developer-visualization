@@ -6,14 +6,27 @@
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+    <!-- <script src="heatmap.js"></script> -->
+    <script src="https://cdn.rawgit.com/fabid/d3-rectbin/master/rectbin.js"></script>
   </head>
   <body>
-    <h1>Playing with animations in D3</h1>
-    <h2 id="title"></h2>
+    <h1>Developer Visualization</h1>
     <!-- <button id="betty">Betty</button>
-    <button id="linda">Linda</button> -->
-    <div id="scatterplot"></div>
+      <button id="linda">Linda</button> -->
+    <h2 id="title" style="margin-bottom: 0">Select a region</h2>
+    <button id="global_button" style="background-color: gray">Global</button>
+    <button id="us_button">United States</button>
+    <h2 id="title" style="margin-bottom: 0; margin-top: 8px">
+      Select a visualization mode
+    </h2>
+    <button id="overview_button" style="background-color: gray">
+      Overview
+    </button>
+    <button id="detailed_button">Detailed</button>
+    <div id="heatmap"></div>
 
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
+    <script src="script2.js"></script>
   </body>
 </html>
