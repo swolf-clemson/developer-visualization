@@ -1,5 +1,5 @@
 // set the dimensions and margins of the graph
-var margin = { top: 20, right: 30, bottom: 30, left: 60 },
+var margin = { top: 20, right: 30, bottom: 40, left: 75 },
   width = 450 - margin.left - margin.right,
   height = 300 - margin.top - margin.bottom;
 
@@ -352,7 +352,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_global.includes("Hybrid") ||
                 currently_clicked_global.includes("In-Person")
               ) {
-                return "#E8DAEF";
+                return "#F4ECF7";
               }
               return "#D2B4DE";
               break;
@@ -361,7 +361,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_global.includes("Remote") ||
                 currently_clicked_global.includes("In-Person")
               ) {
-                return "#E8DAEF";
+                return "#F4ECF7";
               }
               return "#D2B4DE";
               break;
@@ -370,7 +370,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_global.includes("Hybrid") ||
                 currently_clicked_global.includes("Remote")
               ) {
-                return "#E8DAEF";
+                return "#F4ECF7";
               }
               return "#D2B4DE";
               break;
@@ -379,7 +379,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_global.includes(" Women") ||
                 currently_clicked_global.includes("Other")
               ) {
-                return "#D5F5E3";
+                return "#EAFAF1";
               }
               return "#82E0AA";
               break;
@@ -388,7 +388,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_global.includes("Men") ||
                 currently_clicked_global.includes("Other")
               ) {
-                return "#D5F5E3";
+                return "#EAFAF1";
               }
               return "#82E0AA";
               break;
@@ -397,13 +397,13 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_global.includes("Men") ||
                 currently_clicked_global.includes(" Women")
               ) {
-                return "#D5F5E3";
+                return "#EAFAF1";
               }
               return "#82E0AA";
               break;
             case "Independent Contributors":
               if (currently_clicked_global.includes("People Managers")) {
-                return "#FAD7A0";
+                return "#FDEBD0";
               }
               return "#F8C471";
               break;
@@ -411,7 +411,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
               if (
                 currently_clicked_global.includes("Independent Contributors")
               ) {
-                return "#FAD7A0";
+                return "#FDEBD0";
               }
               return "#F8C471";
               break;
@@ -624,7 +624,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_us.includes("Hybrid") ||
                 currently_clicked_us.includes("In-Person")
               ) {
-                return "#E8DAEF";
+                return "#F4ECF7";
               }
               return "#D2B4DE";
               break;
@@ -633,7 +633,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_us.includes("Remote") ||
                 currently_clicked_us.includes("In-Person")
               ) {
-                return "#E8DAEF";
+                return "#F4ECF7";
               }
               return "#D2B4DE";
               break;
@@ -642,7 +642,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_us.includes("Hybrid") ||
                 currently_clicked_us.includes("Remote")
               ) {
-                return "#E8DAEF";
+                return "#F4ECF7";
               }
               return "#D2B4DE";
               break;
@@ -651,7 +651,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_us.includes(" Women") ||
                 currently_clicked_us.includes("Other")
               ) {
-                return "#D5F5E3";
+                return "#EAFAF1";
               }
               return "#82E0AA";
               break;
@@ -660,7 +660,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_us.includes("Men") ||
                 currently_clicked_us.includes("Other")
               ) {
-                return "#D5F5E3";
+                return "#EAFAF1";
               }
               return "#82E0AA";
               break;
@@ -669,19 +669,19 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
                 currently_clicked_us.includes("Men") ||
                 currently_clicked_us.includes(" Women")
               ) {
-                return "#D5F5E3";
+                return "#EAFAF1";
               }
               return "#82E0AA";
               break;
             case "Independent Contributors":
               if (currently_clicked_us.includes("People Managers")) {
-                return "#FAD7A0";
+                return "#FDEBD0";
               }
               return "#F8C471";
               break;
             case "People Managers":
               if (currently_clicked_us.includes("Independent Contributors")) {
-                return "#FAD7A0";
+                return "#FDEBD0";
               }
               return "#F8C471";
               break;
@@ -1213,6 +1213,29 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       // svg_global.selectAll("rect").remove();
       svg_global.selectAll("circle").remove();
       line_global.style("opacity", 0);
+      rect_global.style("opacity", 0);
+
+      agg_global_yaxis.transition().call(d3.axisLeft(y_agg));
+      agg_svg_global
+        .selectAll("rect")
+        .data(agg_data_global)
+        .transition() // .transition()
+        .attr("x", function (d) {
+          return x_agg(d.attribute);
+        })
+        .attr("y", function (d) {
+          return y_agg(d.median);
+        })
+        .attr("width", x_agg.bandwidth())
+        .attr("height", function (d) {
+          return height - y_agg(d.median);
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0)
+        .attr("fill", function (d) {
+          return color_barplot(d.attribute);
+        });
+
       if (overview) {
         var inputForRectBinning = [];
         data_to_use.forEach(function (d) {
@@ -1247,7 +1270,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
           .attr("height", heightInPx)
           .attr("fill", function (d) {
             return color(d.length);
-          });
+          })
+          .on("click", click_heatmap_global);
       } else {
         svg_global
           .append("g")
@@ -1293,6 +1317,28 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
         if (d.Country !== "United States of America") data_to_use.push(d);
       });
 
+      rect_global.style("opacity", 0);
+      agg_global_yaxis.transition().call(d3.axisLeft(y_agg));
+      agg_svg_global
+        .selectAll("rect")
+        .data(agg_data_nonusa)
+        .transition() // .transition()
+        .attr("x", function (d) {
+          return x_agg(d.attribute);
+        })
+        .attr("y", function (d) {
+          return y_agg(d.median);
+        })
+        .attr("width", x_agg.bandwidth())
+        .attr("height", function (d) {
+          return height - y_agg(d.median);
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0)
+        .attr("fill", function (d) {
+          return color_barplot(d.attribute);
+        });
+
       // svg_global.selectAll("rect").remove();
       svg_global.selectAll("circle").remove();
       if (overview) {
@@ -1329,7 +1375,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
           .attr("height", heightInPx)
           .attr("fill", function (d) {
             return color(d.length);
-          });
+          })
+          .on("click", click_heatmap_global);
       } else {
         svg_global
           .append("g")
@@ -1432,7 +1479,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
         .attr("height", heightInPx)
         .attr("fill", function (d) {
           return color(d.length);
-        });
+        })
+        .on("click", click_heatmap_global);
       svg_us
         .append("g")
         // .attr("clip-path", "url(#clip)")
@@ -1451,7 +1499,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
         .attr("height", heightInPx)
         .attr("fill", function (d) {
           return color(d.length);
-        });
+        })
+        .on("click", click_heatmap_usa);
     });
     d3.select("#detailed_button").on("click", function () {
       overview = false;
@@ -1678,5 +1727,86 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       .style("stroke", "red")
       .attr("stroke-width", "2")
       .style("opacity", 0);
+
+    svg_global
+      .append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", -70)
+      .attr("x", -height / 3)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .style("font-weight", "bold")
+      .text("Compensation");
+    svg_us
+      .append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", -70)
+      .attr("x", -height / 3)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .style("font-weight", "bold")
+      .text("Compensation");
+    agg_svg_us
+      .append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", -70)
+      .attr("x", -height / 3 + 30)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .style("font-weight", "bold")
+      .text("Median Compensation");
+    agg_svg_global
+      .append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", -70)
+      .attr("x", -height / 3 + 30)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .style("font-weight", "bold")
+      .text("Median Compensation");
+    svg_global
+      .append("text")
+      .attr("class", "x label")
+      .attr("text-anchor", "end")
+      .attr("x", width / 1.5)
+      .attr("y", height + 35)
+      .style("padding", 0)
+      .style("margin", 0)
+      .style("font-weight", "bold")
+      .text("Work Experience");
+    agg_svg_global
+      .append("text")
+      .attr("class", "x label")
+      .attr("text-anchor", "end")
+      .attr("x", width / 1.5 - 45)
+      .attr("y", height + 65)
+      .style("padding", 0)
+      .style("margin", 0)
+      .style("font-weight", "bold")
+      .text("Respondent Attributes");
+    agg_svg_us
+      .append("text")
+      .attr("class", "x label")
+      .attr("text-anchor", "end")
+      .attr("x", width / 1.5 - 45)
+      .attr("y", height + 65)
+      .style("padding", 0)
+      .style("margin", 0)
+      .style("font-weight", "bold")
+      .text("Respondent Attributes");
+    svg_us
+      .append("text")
+      .attr("class", "x label")
+      .attr("text-anchor", "end")
+      .attr("x", width / 1.5)
+      .attr("y", height + 35)
+      .style("padding", 0)
+      .style("margin", 0)
+      .style("font-weight", "bold")
+      .text("Work Experience");
   });
 });
