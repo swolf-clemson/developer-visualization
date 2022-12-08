@@ -39,7 +39,6 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
     agg_data_global = agg_data.all_regions;
     agg_data_usa = agg_data.usa;
     agg_data_nonusa = agg_data.non_usa;
-    console.log(data);
 
     var global = true;
     var overview = true;
@@ -127,7 +126,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
     var color_scatterplot = d3
       .scaleOrdinal()
       .domain(["Man", "Woman", ""])
-      .range(["#0436D3", "#D30404", "#0436D3"]);
+      .range(["#0436D3", "#0436D3", "#0436D3"]);
 
     // What is the height of a square in px?
     heightInPx = y(yLim[1] - ySize);
@@ -136,10 +135,656 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
     //   var widthInPx = x(xLim[0] + size);
     var widthInPx = 1000;
 
-    var line_global = agg_svg_global
-      .append("line")
-      .style("stroke", "black")
-      .style("opacity", 0);
+    var currently_clicked_global = [];
+    var currently_clicked_us = [];
+
+    var click_barplot_global = function (e, i) {
+      var clickedBar = e.target.__data__.attribute;
+      // if the value is already selected, unselect it
+      // if there is already a bar from the same "group" selected, unselect it
+      var index = 0;
+      switch (clickedBar) {
+        case "Remote":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes("Hybrid")) {
+            index = currently_clicked_global.indexOf("Hybrid");
+            currently_clicked_global.splice(index, 1);
+          }
+          if (currently_clicked_global.includes("In-Person")) {
+            index = currently_clicked_global.indexOf("In-Person");
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+        case "Hybrid":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes("Remote")) {
+            index = currently_clicked_global.indexOf("Remote");
+            currently_clicked_global.splice(index, 1);
+          }
+          if (currently_clicked_global.includes("In-Person")) {
+            index = currently_clicked_global.indexOf("In-Person");
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+        case "In-Person":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes("Remote")) {
+            index = currently_clicked_global.indexOf("Remote");
+            currently_clicked_global.splice(index, 1);
+          }
+          if (currently_clicked_global.includes("Hybrid")) {
+            index = currently_clicked_global.indexOf("Hybrid");
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+        case "Men":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes(" Women")) {
+            index = currently_clicked_global.indexOf(" Women");
+            currently_clicked_global.splice(index, 1);
+          }
+          if (currently_clicked_global.includes("Other")) {
+            index = currently_clicked_global.indexOf("Other");
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+        case " Women":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes("Men")) {
+            index = currently_clicked_global.indexOf("Men");
+            currently_clicked_global.splice(index, 1);
+          }
+          if (currently_clicked_global.includes("Other")) {
+            index = currently_clicked_global.indexOf("Other");
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+        case "Other":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes("Men")) {
+            index = currently_clicked_global.indexOf("Men");
+            currently_clicked_global.splice(index, 1);
+          }
+          if (currently_clicked_global.includes(" Women")) {
+            index = currently_clicked_global.indexOf(" Women");
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+        case "Independent Contributors":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes("People Managers")) {
+            index = currently_clicked_global.indexOf("People Managers");
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+        case "People Managers":
+          index = currently_clicked_global.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_global.splice(index, 1);
+          } else {
+            currently_clicked_global.push(clickedBar);
+          }
+
+          if (currently_clicked_global.includes("Independent Contributors")) {
+            index = currently_clicked_global.indexOf(
+              "Independent Contributors"
+            );
+            currently_clicked_global.splice(index, 1);
+          }
+          break;
+      }
+
+      svg_global.selectAll("circle").attr("r", function (d) {
+        var satisfies_all = true;
+        if (currently_clicked_global.length == 0) {
+          return 3;
+        }
+        for (const cl of currently_clicked_global) {
+          switch (cl) {
+            case "Remote":
+              if (d.RemoteWork !== "Fully remote") satisfies_all = false;
+              break;
+            case "Hybrid":
+              if (d.RemoteWork !== "Hybrid (some remote, some in-person)")
+                satisfies_all = false;
+              break;
+            case "In-Person":
+              if (d.RemoteWork !== "Full in-person") satisfies_all = false;
+              break;
+            case "Men":
+              if (d.Gender !== "Man") satisfies_all = false;
+              break;
+            case " Women":
+              if (d.Gender !== "Woman") satisfies_all = false;
+              break;
+            case "Other":
+              if (d.Gender == "Woman" || d.Gender == "Man")
+                satisfies_all = false;
+              break;
+            case "Independent Contributors":
+              if (d.ICorPM !== "Independent contributor") satisfies_all = false;
+              break;
+            case "People Managers":
+              if (d.ICorPM !== "People manager") satisfies_all = false;
+              break;
+          }
+          if (!satisfies_all) break;
+        }
+        if (satisfies_all) return 3;
+        return 0;
+      });
+      // get the proper data
+      var agg_data_to_use = [];
+      if (global) {
+        agg_data_to_use = agg_data_global;
+      } else {
+        agg_data_to_use = agg_data_nonusa;
+      }
+
+      // reset the barplot
+      line_global.style("opacity", 0);
+      agg_global_yaxis.transition().call(d3.axisLeft(y_agg));
+      agg_svg_global
+        .selectAll("rect")
+        .data(agg_data_to_use)
+        .transition() // .transition()
+        .attr("x", function (d) {
+          return x_agg(d.attribute);
+        })
+        .attr("y", function (d) {
+          return y_agg(d.median);
+        })
+        .attr("width", x_agg.bandwidth())
+        .attr("height", function (d) {
+          return height - y_agg(d.median);
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", function (d) {
+          if (currently_clicked_global.includes(d.attribute)) return 1;
+          return 0;
+        })
+        .attr("fill", function (d) {
+          switch (d.attribute) {
+            case "Remote":
+              if (
+                currently_clicked_global.includes("Hybrid") ||
+                currently_clicked_global.includes("In-Person")
+              ) {
+                return "#E8DAEF";
+              }
+              return "#D2B4DE";
+              break;
+            case "Hybrid":
+              if (
+                currently_clicked_global.includes("Remote") ||
+                currently_clicked_global.includes("In-Person")
+              ) {
+                return "#E8DAEF";
+              }
+              return "#D2B4DE";
+              break;
+            case "In-Person":
+              if (
+                currently_clicked_global.includes("Hybrid") ||
+                currently_clicked_global.includes("Remote")
+              ) {
+                return "#E8DAEF";
+              }
+              return "#D2B4DE";
+              break;
+            case "Men":
+              if (
+                currently_clicked_global.includes(" Women") ||
+                currently_clicked_global.includes("Other")
+              ) {
+                return "#D5F5E3";
+              }
+              return "#82E0AA";
+              break;
+            case " Women":
+              if (
+                currently_clicked_global.includes("Men") ||
+                currently_clicked_global.includes("Other")
+              ) {
+                return "#D5F5E3";
+              }
+              return "#82E0AA";
+              break;
+            case "Other":
+              if (
+                currently_clicked_global.includes("Men") ||
+                currently_clicked_global.includes(" Women")
+              ) {
+                return "#D5F5E3";
+              }
+              return "#82E0AA";
+              break;
+            case "Independent Contributors":
+              if (currently_clicked_global.includes("People Managers")) {
+                return "#FAD7A0";
+              }
+              return "#F8C471";
+              break;
+            case "People Managers":
+              if (
+                currently_clicked_global.includes("Independent Contributors")
+              ) {
+                return "#FAD7A0";
+              }
+              return "#F8C471";
+              break;
+          }
+        });
+    };
+
+    var click_barplot_us = function (e, i) {
+      var clickedBar = e.target.__data__.attribute;
+      // if the value is already selected, unselect it
+      // if there is already a bar from the same "group" selected, unselect it
+      var index = 0;
+      switch (clickedBar) {
+        case "Remote":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes("Hybrid")) {
+            index = currently_clicked_us.indexOf("Hybrid");
+            currently_clicked_us.splice(index, 1);
+          }
+          if (currently_clicked_us.includes("In-Person")) {
+            index = currently_clicked_us.indexOf("In-Person");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+        case "Hybrid":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes("Remote")) {
+            index = currently_clicked_us.indexOf("Remote");
+            currently_clicked_us.splice(index, 1);
+          }
+          if (currently_clicked_us.includes("In-Person")) {
+            index = currently_clicked_us.indexOf("In-Person");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+        case "In-Person":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes("Remote")) {
+            index = currently_clicked_us.indexOf("Remote");
+            currently_clicked_us.splice(index, 1);
+          }
+          if (currently_clicked_us.includes("Hybrid")) {
+            index = currently_clicked_us.indexOf("Hybrid");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+        case "Men":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes(" Women")) {
+            index = currently_clicked_us.indexOf(" Women");
+            currently_clicked_us.splice(index, 1);
+          }
+          if (currently_clicked_us.includes("Other")) {
+            index = currently_clicked_us.indexOf("Other");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+        case " Women":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes("Men")) {
+            index = currently_clicked_us.indexOf("Men");
+            currently_clicked_us.splice(index, 1);
+          }
+          if (currently_clicked_us.includes("Other")) {
+            index = currently_clicked_us.indexOf("Other");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+        case "Other":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes("Men")) {
+            index = currently_clicked_us.indexOf("Men");
+            currently_clicked_us.splice(index, 1);
+          }
+          if (currently_clicked_us.includes(" Women")) {
+            index = currently_clicked_us.indexOf(" Women");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+        case "Independent Contributors":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes("People Managers")) {
+            index = currently_clicked_us.indexOf("People Managers");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+        case "People Managers":
+          index = currently_clicked_us.indexOf(clickedBar);
+          if (index > -1) {
+            currently_clicked_us.splice(index, 1);
+          } else {
+            currently_clicked_us.push(clickedBar);
+          }
+
+          if (currently_clicked_us.includes("Independent Contributors")) {
+            index = currently_clicked_us.indexOf("Independent Contributors");
+            currently_clicked_us.splice(index, 1);
+          }
+          break;
+      }
+
+      svg_us.selectAll("circle").attr("r", function (d) {
+        var satisfies_all = true;
+        if (currently_clicked_us.length == 0) {
+          return 3;
+        }
+        for (const cl of currently_clicked_us) {
+          switch (cl) {
+            case "Remote":
+              if (d.RemoteWork !== "Fully remote") satisfies_all = false;
+              break;
+            case "Hybrid":
+              if (d.RemoteWork !== "Hybrid (some remote, some in-person)")
+                satisfies_all = false;
+              break;
+            case "In-Person":
+              if (d.RemoteWork !== "Full in-person") satisfies_all = false;
+              break;
+            case "Men":
+              if (d.Gender !== "Man") satisfies_all = false;
+              break;
+            case " Women":
+              if (d.Gender !== "Woman") satisfies_all = false;
+              break;
+            case "Other":
+              if (d.Gender == "Woman" || d.Gender == "Man")
+                satisfies_all = false;
+              break;
+            case "Independent Contributors":
+              if (d.ICorPM !== "Independent contributor") satisfies_all = false;
+              break;
+            case "People Managers":
+              if (d.ICorPM !== "People manager") satisfies_all = false;
+              break;
+          }
+          if (!satisfies_all) break;
+        }
+        if (satisfies_all) return 3;
+        return 0;
+      });
+
+      // reset the barplot
+      line_usa.style("opacity", 0);
+      agg_us_yaxis.transition().call(d3.axisLeft(y_agg));
+      agg_svg_us
+        .selectAll("rect")
+        .data(agg_data_usa)
+        .transition() // .transition()
+        .attr("x", function (d) {
+          return x_agg(d.attribute);
+        })
+        .attr("y", function (d) {
+          return y_agg(d.median);
+        })
+        .attr("width", x_agg.bandwidth())
+        .attr("height", function (d) {
+          return height - y_agg(d.median);
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", function (d) {
+          if (currently_clicked_us.includes(d.attribute)) return 1;
+          return 0;
+        })
+        .attr("fill", function (d) {
+          switch (d.attribute) {
+            case "Remote":
+              if (
+                currently_clicked_us.includes("Hybrid") ||
+                currently_clicked_us.includes("In-Person")
+              ) {
+                return "#E8DAEF";
+              }
+              return "#D2B4DE";
+              break;
+            case "Hybrid":
+              if (
+                currently_clicked_us.includes("Remote") ||
+                currently_clicked_us.includes("In-Person")
+              ) {
+                return "#E8DAEF";
+              }
+              return "#D2B4DE";
+              break;
+            case "In-Person":
+              if (
+                currently_clicked_us.includes("Hybrid") ||
+                currently_clicked_us.includes("Remote")
+              ) {
+                return "#E8DAEF";
+              }
+              return "#D2B4DE";
+              break;
+            case "Men":
+              if (
+                currently_clicked_us.includes(" Women") ||
+                currently_clicked_us.includes("Other")
+              ) {
+                return "#D5F5E3";
+              }
+              return "#82E0AA";
+              break;
+            case " Women":
+              if (
+                currently_clicked_us.includes("Men") ||
+                currently_clicked_us.includes("Other")
+              ) {
+                return "#D5F5E3";
+              }
+              return "#82E0AA";
+              break;
+            case "Other":
+              if (
+                currently_clicked_us.includes("Men") ||
+                currently_clicked_us.includes(" Women")
+              ) {
+                return "#D5F5E3";
+              }
+              return "#82E0AA";
+              break;
+            case "Independent Contributors":
+              if (currently_clicked_us.includes("People Managers")) {
+                return "#FAD7A0";
+              }
+              return "#F8C471";
+              break;
+            case "People Managers":
+              if (currently_clicked_us.includes("Independent Contributors")) {
+                return "#FAD7A0";
+              }
+              return "#F8C471";
+              break;
+          }
+        });
+    };
+
+    var click_heatmap_global = function (e, i) {
+      var y_agg_new = d3
+        .scaleLinear()
+        .domain([0, Math.max(+i.y + 10000, 160000)])
+        .range([height, 0]);
+
+      var yAxis_new = d3.axisLeft(y_agg_new);
+      agg_global_yaxis.transition().call(yAxis_new);
+
+      rect_global
+        .style("opacity", 0.5)
+        .attr("x", 0)
+        .attr("y", y_agg_new(+i.y))
+        .attr("width", width)
+        // .attr("height", y_agg_new(Math.max(+i.y - 30000, 0)));
+        .attr(
+          "height",
+          +i.y == 0 ? 5 : y_agg_new(i.y - 30000) - y_agg_new(i.y)
+        );
+
+      if (global) {
+        agg_svg_global
+          .selectAll("rect")
+          .data(agg_data_global)
+          .transition() // .transition()
+          .attr("x", function (d) {
+            return x_agg(d.attribute);
+          })
+          .attr("y", function (d) {
+            return y_agg_new(d.median);
+          })
+          .attr("width", x_agg.bandwidth())
+          .attr("height", function (d) {
+            return height - y_agg_new(d.median);
+          })
+          .attr("fill", function (d) {
+            return color_barplot(d.attribute);
+          });
+      } else {
+        agg_svg_global
+          .selectAll("rect")
+          .data(agg_data_nonusa)
+          .transition() // .transition()
+          .attr("x", function (d) {
+            return x_agg(d.attribute);
+          })
+          .attr("y", function (d) {
+            return y_agg_new(d.median);
+          })
+          .attr("width", x_agg.bandwidth())
+          .attr("height", function (d) {
+            return height - y_agg_new(d.median);
+          })
+          .attr("fill", function (d) {
+            return color_barplot(d.attribute);
+          });
+      }
+    };
+    var click_heatmap_usa = function (e, i) {
+      var y_agg_new = d3
+        .scaleLinear()
+        .domain([0, Math.max(+i.y + 10000, 160000)])
+        .range([height, 0]);
+
+      var yAxis_new = d3.axisLeft(y_agg_new);
+      agg_us_yaxis.transition().call(yAxis_new);
+
+      rect_usa
+        .style("opacity", 0.5)
+        .attr("x", 0)
+        .attr("y", y_agg_new(+i.y))
+        .attr("width", width)
+        // .attr("height", y_agg_new(Math.max(+i.y - 30000, 0)));
+        .attr(
+          "height",
+          +i.y == 0 ? 5 : y_agg_new(i.y - 30000) - y_agg_new(i.y)
+        );
+
+      agg_svg_us
+        .selectAll("rect")
+        .data(agg_data_usa)
+        .transition() // .transition()
+        .attr("x", function (d) {
+          return x_agg(d.attribute);
+        })
+        .attr("y", function (d) {
+          return y_agg_new(d.median);
+        })
+        .attr("width", x_agg.bandwidth())
+        .attr("height", function (d) {
+          return height - y_agg_new(d.median);
+        })
+        .attr("fill", function (d) {
+          return color_barplot(d.attribute);
+        });
+    };
 
     var clicky_global = function (e, i) {
       var y_agg_new = d3
@@ -166,53 +811,89 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
             return x_agg(d.attribute);
           })
           .attr("y", function (d) {
-            console.log(d);
-            console.log(y_agg_new(d.median));
-
             return y_agg_new(d.median);
           })
           .attr("width", x_agg.bandwidth())
           .attr("height", function (d) {
             return height - y_agg_new(d.median);
           })
-          .attr("fill", function (d) {
+          .attr("stroke", "black")
+          .attr("stroke-width", function (d) {
             switch (d.attribute) {
               case "Remote":
-                if (i.RemoteWork == "Fully remote") return "#FE1C1C";
-                else return "#D2B4DE";
+                if (i.RemoteWork == "Fully remote") return 1;
+                else return 0;
                 break;
               case "Hybrid":
                 if (i.RemoteWork == "Hybrid (some remote, some in-person)")
-                  return "#FE1C1C";
-                else return "#D2B4DE";
+                  return 1;
+                else return 0;
                 break;
               case "In-Person":
-                if (i.RemoteWork == "Full in-person") return "#FE1C1C";
-                else return "#D2B4DE";
+                if (i.RemoteWork == "Full in-person") return 1;
+                else return 0;
                 break;
               case "Men":
-                if (i.Gender == "Man") return "#FE1C1C";
-                else return "#82E0AA";
+                if (i.Gender == "Man") return 1;
+                else return 0;
                 break;
               case " Women":
-                if (i.Gender == "Woman") return "#FE1C1C";
-                else return "#82E0AA";
+                if (i.Gender == "Woman") return 1;
+                else return 0;
+                break;
+              case "Other":
+                if (i.Gender !== "Woman" && i.Gender !== "Man") return 1;
+                else return 0;
+                break;
+              case "Independent Contributors":
+                if (i.ICorPM == "Independent contributor") return 1;
+                else return 0;
+                break;
+              case "People Managers":
+                if (i.ICorPM == "People manager") return 1;
+                else return 0;
+                break;
+            }
+          })
+          .attr("fill", function (d) {
+            switch (d.attribute) {
+              case "Remote":
+                if (i.RemoteWork == "Fully remote") return "#D2B4DE";
+                else return "#E8DAEF";
+                break;
+              case "Hybrid":
+                if (i.RemoteWork == "Hybrid (some remote, some in-person)")
+                  return "#D2B4DE";
+                else return "#E8DAEF";
+                break;
+              case "In-Person":
+                if (i.RemoteWork == "Full in-person") return "#D2B4DE";
+                else return "#E8DAEF";
+                break;
+              case "Men":
+                if (i.Gender == "Man") return "#82E0AA";
+                else return "#D5F5E3";
+                break;
+              case " Women":
+                if (i.Gender == "Woman") return "#82E0AA";
+                else return "#D5F5E3";
                 break;
               case "Other":
                 if (i.Gender !== "Woman" && i.Gender !== "Man")
-                  return "#FE1C1C";
-                else return "#82E0AA";
+                  return "#82E0AA";
+                else return "#D5F5E3";
                 break;
               case "Independent Contributors":
-                if (i.ICorPM == "Independent contributor") return "#FE1C1C";
-                else return "#F8C471";
+                if (i.ICorPM == "Independent contributor") return "#F8C471";
+                else return "#FAD7A0";
                 break;
               case "People Managers":
-                if (i.ICorPM == "People manager") return "#FE1C1C";
-                else return "#F8C471";
+                if (i.ICorPM == "People manager") return "#F8C471";
+                else return "#FAD7A0";
                 break;
             }
           });
+        agg_svg_global.on("click", click_barplot_global);
       } else {
         agg_svg_global
           .selectAll("rect")
@@ -222,59 +903,91 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
             return x_agg(d.attribute);
           })
           .attr("y", function (d) {
-            console.log(d);
-            console.log(y_agg_new(d.median));
-
             return y_agg_new(d.median);
           })
           .attr("width", x_agg.bandwidth())
           .attr("height", function (d) {
             return height - y_agg_new(d.median);
           })
-          .attr("fill", function (d) {
+          .attr("stroke", "black")
+          .attr("stroke-width", function (d) {
             switch (d.attribute) {
               case "Remote":
-                if (i.RemoteWork == "Fully remote") return "#FE1C1C";
-                else return "#D2B4DE";
+                if (i.RemoteWork == "Fully remote") return 1;
+                else return 0;
                 break;
               case "Hybrid":
                 if (i.RemoteWork == "Hybrid (some remote, some in-person)")
-                  return "#FE1C1C";
-                else return "#D2B4DE";
+                  return 1;
+                else return 0;
                 break;
               case "In-Person":
-                if (i.RemoteWork == "Full in-person") return "#FE1C1C";
-                else return "#D2B4DE";
+                if (i.RemoteWork == "Full in-person") return 1;
+                else return 0;
                 break;
               case "Men":
-                if (i.Gender == "Man") return "#FE1C1C";
-                else return "#82E0AA";
+                if (i.Gender == "Man") return 1;
+                else return 0;
                 break;
               case " Women":
-                if (i.Gender == "Woman") return "#FE1C1C";
-                else return "#82E0AA";
+                if (i.Gender == "Woman") return 1;
+                else return 0;
+                break;
+              case "Other":
+                if (i.Gender !== "Woman" && i.Gender !== "Man") return 1;
+                else return 0;
+                break;
+              case "Independent Contributors":
+                if (i.ICorPM == "Independent contributor") return 1;
+                else return 0;
+                break;
+              case "People Managers":
+                if (i.ICorPM == "People manager") return 1;
+                else return 0;
+                break;
+            }
+          })
+          .attr("fill", function (d) {
+            switch (d.attribute) {
+              case "Remote":
+                if (i.RemoteWork == "Fully remote") return "#D2B4DE";
+                else return "#E8DAEF";
+                break;
+              case "Hybrid":
+                if (i.RemoteWork == "Hybrid (some remote, some in-person)")
+                  return "#D2B4DE";
+                else return "#E8DAEF";
+                break;
+              case "In-Person":
+                if (i.RemoteWork == "Full in-person") return "#D2B4DE";
+                else return "#E8DAEF";
+                break;
+              case "Men":
+                if (i.Gender == "Man") return "#82E0AA";
+                else return "#D5F5E3";
+                break;
+              case " Women":
+                if (i.Gender == "Woman") return "#82E0AA";
+                else return "#D5F5E3";
                 break;
               case "Other":
                 if (i.Gender !== "Woman" && i.Gender !== "Man")
-                  return "#FE1C1C";
-                else return "#82E0AA";
+                  return "#82E0AA";
+                else return "#D5F5E3";
                 break;
               case "Independent Contributors":
-                if (i.ICorPM == "Independent contributor") return "#FE1C1C";
-                else return "#F8C471";
+                if (i.ICorPM == "Independent contributor") return "#F8C471";
+                else return "#FAD7A0";
                 break;
               case "People Managers":
-                if (i.ICorPM == "People manager") return "#FE1C1C";
-                else return "#F8C471";
+                if (i.ICorPM == "People manager") return "#F8C471";
+                else return "#FAD7A0";
                 break;
             }
           });
+        agg_svg_global.on("click", click_barplot_global);
       }
     };
-    var line_usa = agg_svg_us
-      .append("line")
-      .style("stroke", "black")
-      .style("opacity", 0);
 
     var clicky_usa = function (e, i) {
       var y_agg_new = d3
@@ -300,52 +1013,88 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
           return x_agg(d.attribute);
         })
         .attr("y", function (d) {
-          console.log(d);
-          console.log(y_agg_new(d.median));
-
           return y_agg_new(d.median);
         })
         .attr("width", x_agg.bandwidth())
         .attr("height", function (d) {
           return height - y_agg_new(d.median);
         })
-        .attr("fill", function (d) {
+        .attr("stroke", "black")
+        .attr("stroke-width", function (d) {
           switch (d.attribute) {
             case "Remote":
-              if (i.RemoteWork == "Fully remote") return "#FE1C1C";
-              else return "#D2B4DE";
+              if (i.RemoteWork == "Fully remote") return 1;
+              else return 0;
               break;
             case "Hybrid":
               if (i.RemoteWork == "Hybrid (some remote, some in-person)")
-                return "#FE1C1C";
-              else return "#D2B4DE";
+                return 1;
+              else return 0;
               break;
             case "In-Person":
-              if (i.RemoteWork == "Full in-person") return "#FE1C1C";
-              else return "#D2B4DE";
+              if (i.RemoteWork == "Full in-person") return 1;
+              else return 0;
               break;
             case "Men":
-              if (i.Gender == "Man") return "#FE1C1C";
-              else return "#82E0AA";
+              if (i.Gender == "Man") return 1;
+              else return 0;
               break;
             case " Women":
-              if (i.Gender == "Woman") return "#FE1C1C";
-              else return "#82E0AA";
+              if (i.Gender == "Woman") return 1;
+              else return 0;
               break;
             case "Other":
-              if (i.Gender !== "Woman" && i.Gender !== "Man") return "#FE1C1C";
-              else return "#82E0AA";
+              if (i.Gender !== "Woman" && i.Gender !== "Man") return 1;
+              else return 0;
               break;
             case "Independent Contributors":
-              if (i.ICorPM == "Independent contributor") return "#FE1C1C";
-              else return "#F8C471";
+              if (i.ICorPM == "Independent contributor") return 1;
+              else return 0;
               break;
             case "People Managers":
-              if (i.ICorPM == "People manager") return "#FE1C1C";
-              else return "#F8C471";
+              if (i.ICorPM == "People manager") return 1;
+              else return 0;
+              break;
+          }
+        })
+        .attr("fill", function (d) {
+          switch (d.attribute) {
+            case "Remote":
+              if (i.RemoteWork == "Fully remote") return "#D2B4DE";
+              else return "#E8DAEF";
+              break;
+            case "Hybrid":
+              if (i.RemoteWork == "Hybrid (some remote, some in-person)")
+                return "#D2B4DE";
+              else return "#E8DAEF";
+              break;
+            case "In-Person":
+              if (i.RemoteWork == "Full in-person") return "#D2B4DE";
+              else return "#E8DAEF";
+              break;
+            case "Men":
+              if (i.Gender == "Man") return "#82E0AA";
+              else return "#D5F5E3";
+              break;
+            case " Women":
+              if (i.Gender == "Woman") return "#82E0AA";
+              else return "#D5F5E3";
+              break;
+            case "Other":
+              if (i.Gender !== "Woman" && i.Gender !== "Man") return "#82E0AA";
+              else return "#D5F5E3";
+              break;
+            case "Independent Contributors":
+              if (i.ICorPM == "Independent contributor") return "#F8C471";
+              else return "#FAD7A0";
+              break;
+            case "People Managers":
+              if (i.ICorPM == "People manager") return "#F8C471";
+              else return "#FAD7A0";
               break;
           }
         });
+      agg_svg_us.on("click", click_barplot_us);
     };
 
     var tooltip = d3
@@ -463,6 +1212,7 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       data_to_use = data;
       // svg_global.selectAll("rect").remove();
       svg_global.selectAll("circle").remove();
+      line_global.style("opacity", 0);
       if (overview) {
         var inputForRectBinning = [];
         data_to_use.forEach(function (d) {
@@ -522,15 +1272,14 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
           return x_agg(d.attribute);
         })
         .attr("y", function (d) {
-          console.log(d);
-          console.log(y_agg(d.median));
-
           return y_agg(d.median);
         })
         .attr("width", x_agg.bandwidth())
         .attr("height", function (d) {
           return height - y_agg(d.median);
         })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0)
         .attr("fill", function (d) {
           return color_barplot(d.attribute);
         });
@@ -605,15 +1354,14 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
           return x_agg(d.attribute);
         })
         .attr("y", function (d) {
-          console.log(d);
-          console.log(y_agg(d.median));
-
           return y_agg(d.median);
         })
         .attr("width", x_agg.bandwidth())
         .attr("height", function (d) {
           return height - y_agg(d.median);
         })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0)
         .attr("fill", function (d) {
           return color_barplot(d.attribute);
         });
@@ -623,7 +1371,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       overview = true;
       d3.select("#detailed_button").style("background-color", "#e7e7e7");
       d3.select("#overview_button").style("background-color", "gray");
-
+      line_global.style("opacity", 0);
+      line_usa.style("opacity", 0);
       if (!global) {
         data_to_use = [];
         data.forEach((d) => {
@@ -710,7 +1459,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       d3.select("#detailed_button").style("background-color", "gray");
       svg_global.selectAll("rect").remove();
       svg_us.selectAll("rect").remove();
-
+      rect_global.style("opacity", 0);
+      rect_usa.style("opacity", 0);
       if (!global) {
         data_to_use = [];
         data.forEach((d) => {
@@ -719,6 +1469,56 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       } else {
         data_to_use = data;
       }
+
+      var agg_data_to_use = [];
+      if (global) {
+        agg_data_to_use = agg_data_global;
+      } else {
+        agg_data_to_use = agg_data_nonusa;
+      }
+
+      agg_global_yaxis.transition().call(d3.axisLeft(y_agg));
+      agg_us_yaxis.transition().call(d3.axisLeft(y_agg));
+      agg_svg_global
+        .selectAll("rect")
+        .data(agg_data_to_use)
+        .transition() // .transition()
+        .attr("x", function (d) {
+          return x_agg(d.attribute);
+        })
+        .attr("y", function (d) {
+          return y_agg(d.median);
+        })
+        .attr("width", x_agg.bandwidth())
+        .attr("height", function (d) {
+          return height - y_agg(d.median);
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0)
+        .attr("fill", function (d) {
+          return color_barplot(d.attribute);
+        });
+      agg_svg_global.on("click", click_barplot_global);
+      agg_svg_us
+        .selectAll("rect")
+        .data(agg_data_usa)
+        .transition() // .transition()
+        .attr("x", function (d) {
+          return x_agg(d.attribute);
+        })
+        .attr("y", function (d) {
+          return y_agg(d.median);
+        })
+        .attr("width", x_agg.bandwidth())
+        .attr("height", function (d) {
+          return height - y_agg(d.median);
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0)
+        .attr("fill", function (d) {
+          return color_barplot(d.attribute);
+        });
+      agg_svg_us.on("click", click_barplot_us);
 
       svg_global
         .append("g")
@@ -780,7 +1580,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       .attr("height", heightInPx)
       .attr("fill", function (d) {
         return color(d.length);
-      });
+      })
+      .on("click", click_heatmap_global);
     svg_us
       .append("g")
       .attr("clip-path", "url(#clip)")
@@ -798,7 +1599,8 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       .attr("height", heightInPx)
       .attr("fill", function (d) {
         return color(d.length);
-      });
+      })
+      .on("click", click_heatmap_usa);
     // .attr("stroke", "black")
     // .attr("stroke-width", "0.4")
 
@@ -846,7 +1648,6 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       .attr("fill", function (d) {
         return color_barplot(d.attribute);
       });
-    console.log(agg_data);
     agg_svg_us
       .selectAll("mybar")
       .data(agg_data_usa)
@@ -865,6 +1666,17 @@ d3.csv("sof_22_5000sample.csv").then((data) => {
       .attr("fill", function (d) {
         return color_barplot(d.attribute);
       });
-    console.log(agg_data);
+    var line_usa = agg_svg_us
+      .append("line")
+      .style("stroke", "red")
+      .attr("stroke-width", "2")
+      .style("opacity", 0);
+    var rect_global = agg_svg_global.append("rect").style("opacity", 0);
+    var rect_usa = agg_svg_us.append("rect").style("opacity", 0);
+    var line_global = agg_svg_global
+      .append("line")
+      .style("stroke", "red")
+      .attr("stroke-width", "2")
+      .style("opacity", 0);
   });
 });
